@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 public class Main {
@@ -14,73 +15,45 @@ public class Main {
 		
 		M = sc.nextInt();
 		
-		select(0);
+		int[] first = {2,3,5,7};
+		
+		for (int i : first) {
+			select(i, 1);
+		}
 		
 		System.out.println(sb);
 		
 	}
 	
-	public static void select(int idx) {
+	public static void select(int num, int idx) {
 		if(idx == M) {
-			if(isPrime()) {
-				sb.append(changeToNum() + "\n");
-			}
+			sb.append(num + "\n");
 			return;
 		}
 		
-		for(int i = 1 ; i <= N ; i ++) {
-			selected.add(i);
-			select(idx + 1);
-			selected.remove(selected.size() - 1);
-		}
-	}
-	
-	public static boolean isPrime() {
+		int[] prime = {1,3,7,9};
 		
-		int num = changeToNum();
-		
-		int d = 0;
-		for (int t = num; t > 0; t /= 10) d++;
-
-		int div = 1;
-		for (int i = 1; i < d; i++) div *= 10;
-
-		// prefix 출력
-		for (int i = 0; i < d; i++) {
-		    int prefix = num / div;
-		    
-			if(!checkPrime(prefix)) {
-				return false;
+		for (int i : prime) {
+			int nextNum = num * 10 + i;
+			if(isPrime(nextNum)) {
+				select(nextNum, idx + 1);
 			}
-		    div /= 10; 
 		}
-		return true;
+		
 	}
 	
-	public static boolean checkPrime(int num) {
+	public static boolean isPrime(int num) {
 		if (num == 1) return false;
 		if (num == 2) return true;
 		if (num % 2 == 0) return false;
 		
-		for (int i = 3 ; i <= Math.sqrt(num) ; i ++) {
+		for (int i = 3 ; i <= Math.sqrt(num) ; i += 2) {
 			if (num % i == 0) {
 				return false;
 			}
 		}
 		
 		return true;
-	}
-	
-	public static int changeToNum() {
-		int num = 0 ;
-		int offSet = 1;
-		
-		for (int i = selected.size() - 1 ; i >= 0 ; i --) {
-			num += selected.get(i) * offSet;
-			offSet *= 10;
-		}
-		
-		return num;
 	}
 
 }
