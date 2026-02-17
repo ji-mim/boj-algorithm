@@ -2,7 +2,8 @@ import java.util.*;
 import java.io.*;
 
 /**
- * DFS로 풀어볼 수 있을 것 같음 , 컴퓨터의 수는 100 이하, 1에서 시작 
+ * DFS로 풀어볼 수 있을 것 같음 , 컴퓨터의 수는 100 이하, 1에서 시작 => 소요시간 17분 
+ * BFS로도 풀 수 있음 
  * O(N^2) 예상
  */
 
@@ -12,6 +13,7 @@ public class Main {
     static int MAX_NUM = 101;
     static int [][] graph = new int[MAX_NUM][MAX_NUM];
     static boolean [] visited = new boolean[MAX_NUM];
+    static ArrayDeque<Integer> que  = new ArrayDeque<>();
 
     public static void main(String args[]) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,7 +29,10 @@ public class Main {
             graph[to][from] = 1;
         }
 
-        dfs(1);
+        // dfs(1);
+
+
+        bfs(1);
 
         int ans = 0 ;
 
@@ -36,6 +41,22 @@ public class Main {
         }
 
         System.out.println(ans - 1);
+
+    }
+
+    public static void bfs(int start){
+        visited[start] = true;
+        que.offer(start);
+
+        while(!que.isEmpty()){
+            int curr = que.poll();
+            for (int i = 0 ; i <= N ; i ++){
+                if (graph[curr][i] == 1 && !visited[i]) {
+                    visited[i] = true;
+                    que.offer(i);
+                }
+            }
+        }
 
     }
 
