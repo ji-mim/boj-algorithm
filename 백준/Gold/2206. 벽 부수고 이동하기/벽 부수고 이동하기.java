@@ -1,73 +1,82 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 	
-	private static boolean[][][] visited;
-	private static int answer, ROW, COL;
-	private static int[] dr = {1, -1, 0, 0};
-	private static int[] dc = {0, 0, -1, 1};
-	private static char[][] map;
+	static int N, M;
+	static int[][] map;
 	
-	static class Node {
-		int r, c, dist, broken;
-		Node(int r, int c, int dist, int broken) {
-			this.r = r; this.c = c; this.dist = dist; this.broken = broken;
-		}
-	}
-	
-	
-	public static void main(String args[]) throws Exception {
+	public static void main(String[] args) throws IOException {
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 		
-		String[] arr = br.readLine().split(" ");
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
 		
-		ROW = Integer.parseInt(arr[0]);
-		COL = Integer.parseInt(arr[1]);
-		map = new char[ROW][COL];
-		for(int i = 0; i < ROW; i++) {
-			char[] line = br.readLine().toCharArray();
-			map[i] = line.clone();
+		//배열 입력 받기 
+		for (int i = 0 ; i < N ; i ++) {
+			char[] input = br.readLine().toCharArray();
+			for (int j = 0 ; j < M ; j ++) {
+				map[i][j] = input[j] - '0';
+			}
 		}
 		
-		answer = Integer.MAX_VALUE;
-		visited = new boolean[ROW][COL][2];
-		System.out.println(bfs());
+		int ans = bfs();
+		
+		System.out.println(ans);
+		
 	}
-
-
-	private static int bfs() {
-		ArrayDeque<Node> q = new ArrayDeque<>();
-		q.add(new Node(0, 0, 1, 0));
-		visited[0][0][0] = true;
+	
+	public static int bfs() {
+		ArrayDeque<int[]> que = new ArrayDeque<>();
+		int[][][] visited = new int[N][M][2];
 		
-		while(!q.isEmpty()) {
-			Node cur = q.poll();
-			if(cur.r == ROW - 1 && cur.c == COL - 1) {
-				return cur.dist;
-			}
+		int[] dx = {-1,1,0,0};
+		int[] dy = {0,0,-1,1};
+		
+		// 시작점 넣기 
+		que.offer(new int[] {0,0,0});
+		visited[0][0][0] = 1;
+		
+		//bfs 시작 
+		while(!que.isEmpty()) {
+			int[] cur = que.poll();
+			int x = cur[0];
+			int y = cur[1];
+			int isBreaked = cur[2];
 			
-			for(int d = 0; d < 4; d++) {
-				int nr = cur.r + dr[d];
-				int nc = cur.c + dc[d];
+			// 목적지에 도착했으면 최단 경로니까 return 해주기 
+			if (x == N -1 && y == M - 1) {
+				return visited[x][y][isBreaked];
+			}
+
+			
+			for (int i = 0 ; i < 4 ; i ++) {
+				int nx = x + dx[i];
+				int ny = y + dy[i];
 				
-				if(nr < 0 || nr >= ROW || nc < 0 || nc >= COL) continue;
+				if(nx < 0 || nx >= N || ny < 0 || ny >= M) continue; // 배열 바깥이면 방문하지 않기 
+				if(visited[nx][ny][isBreaked] > 0) continue; // 이 상태로 방문해본적 있으면 방문하지 않기 
 				
-				if(map[nr][nc] == '0') {
-					if(!visited[nr][nc][cur.broken]) {
-						visited[nr][nc][cur.broken] = true;
-						q.add(new Node(nr, nc, cur.dist + 1, cur.broken));
-					}
-				} else { // 벽
-					if (cur.broken == 0 && ! visited[nr][nc][1]) {
-						visited[nr][nc][1] = true;
-						q.add(new Node(nr, nc, cur.dist + 1, 1));
-					}
+				if(map[nx][ny] == 0) { // 길이 있으면 쭉 가주기 
+					que.offer(new int[] {nx,ny,isBreaked});
+					visited[nx][ny][isBreaked] = visited[x][y][isBreaked] + 1;
+				}else { // 벽이 있는 경우
+					if(isBreaked == 1) continue; // 이미 벽을 부순적 있으면 이 진행은 불가능함
+					
+					// 벽을 부순적 없다면 한번은 부수고 가볼 수 있음 
+					que.offer(new int[] {nx,ny,1});
+					visited[nx][ny][1] = visited[x][y][isBreaked] + 1;
 				}
+				
 			}
 		}
-
+		
+		
+		
 		return -1;
 	}
+
 }
