@@ -1,77 +1,71 @@
 import java.io.*;
 import java.util.*;
 
+
 public class Main {
 
-	public static void main(String[] args) throws Exception {
+	static int N, M; // LED 수, 학생 수
+	static int[] LED;
+	
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
-		int size = Integer.parseInt(br.readLine());
-		int[] LEDs = new int[size];
+		N = Integer.parseInt(br.readLine());
+		LED = new int[N + 1];
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		for(int i = 0; i < size; i++) {
-			LEDs[i] = Integer.parseInt(st.nextToken());
+		
+		for (int i = 1 ; i <= N ; i ++) {
+			LED[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		int sn = Integer.parseInt(br.readLine());
-		int[][] students = new int[sn][2];
-		for(int i = 0; i < sn; i++) {
-			String[] line = br.readLine().split(" ");
-			students[i][0] = Integer.parseInt(line[0]);
-			students[i][1] = Integer.parseInt(line[1]);
-		}
+		M = Integer.parseInt(br.readLine());
 		
-		for(int num = 0; num < sn; num++) {
-			int gender = students[num][0];
-			int where = students[num][1] - 1;
-			
-			if(gender == 1) {
-				for(int i = where; i < size; i += (where + 1)) {
-					if(LEDs[i] == 1) {
-						LEDs[i] = 0;
-					} else {
-						LEDs[i] = 1;
-					}
-				}
-			} else if(gender == 2) {
-				int start = where;
-				int end = where;
-				while(start > 0 && end < (size -1) && LEDs[start] == LEDs[end]) {
-					start--;
-					end++;
-					if(LEDs[start] != LEDs[end]) {
-						start++;
-						end--;
-						break;
-					}
-				}
-				for(int i = start; i <= end; i++) {
-					if(LEDs[i] == 1) {
-						LEDs[i] = 0;
-					} else {
-						LEDs[i] = 1;
-					}
-				}
-			}
-			
+		for (int t = 0 ; t < M ; t ++) {
+			st = new StringTokenizer(br.readLine());
+			int gender = Integer.parseInt(st.nextToken());
+			int idx = Integer.parseInt(st.nextToken());
+			changeLED(gender, idx);
 		}
-		
 		
 		StringBuilder sb = new StringBuilder();
-		for(int i = 0; i < size; i++) {
-			if(i % 20 == 0) {
-				if(i == 0) {
-					sb.append(LEDs[i]);
-					sb.append(' ');
-					continue;
-				}
-				sb.append('\n');
-			}
-			sb.append(LEDs[i]);
-			sb.append(' ');
-		}
-		System.out.println(sb);
 		
+		for (int i = 1 ; i <= N ; i ++) {
+			sb.append(LED[i]).append(" ");
+			if (i % 20 == 0) sb.append("\n");
+		}
+		
+		System.out.println(sb);
+	}
+	
+	static void changeLED(int gender, int idx) {
+		if(gender == 1) { // 남자였을 때 받은 idx의 배수를 켠다.
+			int val = idx;
+			int multi = 1;
+			while(val * multi <= N) {
+				turn(val * multi ++);
+			}
+		}else { //여자였을 때 대칭 구간을 찾는다
+			for (int i = 0 ; i <= N ; i ++) {
+				int left = idx - i;
+				int right = idx + i;
+				
+				if(left <= 0 || left > N || right <= 0 || right > N) break;
+				
+				if(LED[left] == LED[right]) {
+					if(i == 0) {
+						turn(left);
+					}else {
+						turn(left);
+						turn(right);
+					}
+				}else {
+					break;
+				}
+			}
+			
+		}
 	}
 
+	static void turn(int idx) {
+		LED[idx] = (LED[idx] + 1) % 2;
+	}
 }
