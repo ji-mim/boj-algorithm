@@ -14,6 +14,7 @@ public class Solution {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			N = Integer.parseInt(st.nextToken());
 			M = Integer.parseInt(st.nextToken());
+			
 			makeSets();
 			
 			while(M -- > 0) {
@@ -23,12 +24,10 @@ public class Solution {
 				union(from, to);
 			}
 			
-			boolean[] visited = new boolean[N + 1];
 			int ans = 0;
 			for (int i = 1 ; i <= N ; i ++) {
-				if(!visited[findSet(i)]) {
+				if(parents[i] < 0) {
 					ans ++;
-					visited[findSet(i)] = true;
 				}
 			}
 			
@@ -39,18 +38,25 @@ public class Solution {
 	
 	public static void makeSets() {
 		parents = new int[N + 1];
-		for (int i = 1 ; i <= N ; i ++) {
-			parents[i] = i ;
-		}
+		Arrays.fill(parents, -1);
 	}
 	
 	public static int findSet(int node) {
-		if(parents[node] == node) return node;
+		if(parents[node] < 0) return node;
 		return parents[node] = findSet(parents[node]);
 	}
 	
 	public static void union(int from, int to) {
-		if(findSet(from) == findSet(to)) return;
-		parents[findSet(to)] = findSet(from);
+		int rootFrom = findSet(from);
+		int rootTo = findSet(to);
+		if(rootFrom == rootTo) return;
+		
+		if(parents[rootFrom] < parents[rootTo]) {
+			parents[rootFrom] += parents[rootTo];
+			parents[rootTo] = rootFrom;
+		}else {
+			parents[rootTo] += parents[rootFrom];
+			parents[rootFrom] = rootTo;
+		}
 	}
 }
