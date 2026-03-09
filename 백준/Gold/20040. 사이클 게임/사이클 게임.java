@@ -46,6 +46,6 @@ public class Main {
 	
 	public static int findRoot(int node) {
 		if(parents[node] == node) return node;
-		return findRoot(parents[node]);
+		return parents[node] = findRoot(parents[node]);
 	}
 }
