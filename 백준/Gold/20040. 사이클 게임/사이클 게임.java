@@ -5,6 +5,7 @@ public class Main {
 	
 	static int N, M;
 	static int[] parents;
+	static int[] ranks;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,6 +14,7 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 		
 		parents = new int[N];
+		ranks = new int[N];
 		
 		for (int i = 0 ; i < N ; i ++) {
 			parents[i] = i; 
@@ -32,11 +34,19 @@ public class Main {
 				break;
 			}
 			
-			parents[rootTo] = rootFrom;
+			if(ranks[rootFrom] == ranks[rootTo]) {
+				parents[rootTo] = rootFrom;
+				ranks[rootFrom] ++;
+			}else if(ranks[rootFrom] > ranks[rootTo]){
+				parents[rootTo] = rootFrom;
+			}else {
+				parents[rootFrom] = rootTo;
+			}
 		}
 		
 		System.out.println(ans);
 	}
+	
 	
 	public static int findRoot(int node) {
 		if(parents[node] == node) return node;
