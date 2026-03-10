@@ -3,24 +3,23 @@ import java.util.*;
 
 public class Solution {
 	
-	static class Cell {
-	    int x, y;
-	    int sum;      // 총 미생물 수
-	    int maxCnt;   // 들어온 군집 중 최대 개수
-	    int dir;      // maxCnt를 가진 군집의 방향
+	public static class Micro{
+		int x, y, sum, maxCnt, dir;
 
-	    public Cell(int x, int y, int sum, int maxCnt, int dir) {
-	        this.x = x;
-	        this.y = y;
-	        this.sum = sum;
-	        this.maxCnt = maxCnt;
-	        this.dir = dir;
-	    }
-	}	
+		public Micro(int x, int y, int sum, int maxCnt, int dir) {
+			super();
+			this.x = x;
+			this.y = y;
+			this.sum = sum;
+			this.maxCnt = maxCnt;
+			this.dir = dir;
+		}
+	}
+	
 	static int T, N, M, K;
-	static int[] dx = {-1,1,0,0}; // 상하좌우
+	static ArrayList<Micro> microList = new ArrayList<>();
+	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
-	static ArrayList<Cell> microList = new ArrayList<>();
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -33,71 +32,66 @@ public class Solution {
 			M = Integer.parseInt(st.nextToken());
 			K = Integer.parseInt(st.nextToken());
 			microList.clear();
+			
 			for (int i = 0 ; i < K ; i ++) {
 				st = new StringTokenizer(br.readLine());
 				int x = Integer.parseInt(st.nextToken());
 				int y = Integer.parseInt(st.nextToken());
 				int cnt = Integer.parseInt(st.nextToken());
-				int d = Integer.parseInt(st.nextToken()) - 1;
-				Cell micro = new Cell(x, y, cnt, cnt, d);
-				microList.add(micro);
+				int dir = Integer.parseInt(st.nextToken()) - 1;
+				
+				microList.add(new Micro(x,y,cnt, cnt, dir));
 			}
 			
-			while(M -- > 0) {
-				moveAll();
+			for (int i = 0 ; i < M ; i ++) {
+				HashMap<Integer, Micro> nextMap = new HashMap<>();
+				
+				for (Micro m : microList) {
+					int nx = m.x + dx[m.dir];
+					int ny = m.y + dy[m.dir];
+					int nSum = m.sum;
+					int nd = m.dir;
+					
+					if(nx == N - 1 || nx == 0 || ny == N - 1 || ny == 0) {
+						nd = changeDir(nd);
+						nSum /= 2;
+					}
+					
+					if(nSum == 0) continue;
+					
+					int key = nx * N + ny;
+					
+					if(!nextMap.containsKey(key)) {
+						nextMap.put(key, new Micro(nx,ny,nSum, nSum , nd));
+					}else {
+						Micro exist = nextMap.get(key);
+						if(exist.maxCnt < nSum) {
+							exist.maxCnt = nSum;
+							exist.dir = nd;
+						}
+						exist.sum += nSum;
+					}
+				}
+				
+				ArrayList<Micro> nextList = new ArrayList<>();
+				for(Micro m : nextMap.values()) {
+					nextList.add(m);
+				}
+				
+				microList = nextList;
 			}
 			
-			int totalCnt =  microList.stream().mapToInt(m -> m.sum).sum();
+			int totalCnt = microList.stream().mapToInt(m -> m.sum).sum();
 			
 			System.out.println("#" + tc + " " + totalCnt);
 		}
 	}
 	
-	public static void moveAll() {
-	    HashMap<Integer, Cell> nextMap = new HashMap<>();
-
-	    for (Cell m : microList) {
-	        int nx = m.x + dx[m.dir];
-	        int ny = m.y + dy[m.dir];
-	        int nd = m.dir;
-	        int ncnt = m.sum;
-
-	        if (nx == 0 || nx == N - 1 || ny == 0 || ny == N - 1) {
-	            nd = changeDir(nd);
-	            ncnt /= 2;
-	        }
-
-	        if (ncnt == 0) continue;
-
-	        int key = nx * N + ny;
-
-	        if (!nextMap.containsKey(key)) {
-	            nextMap.put(key, new Cell(nx, ny, ncnt, ncnt, nd));
-	        } else {
-	            Cell cell = nextMap.get(key);
-	            cell.sum += ncnt;
-
-	            if (ncnt > cell.maxCnt) {
-	                cell.maxCnt = ncnt;
-	                cell.dir = nd;
-	            }
-	        }
-	    }
-
-	    ArrayList<Cell> nextList = new ArrayList<>();
-	    for (Cell cell : nextMap.values()) {
-	        nextList.add(new Cell(cell.x, cell.y, cell.sum, cell.maxCnt, cell.dir));
-	    }
-
-	    microList = nextList;
+	static int changeDir(int dir) {
+		if(dir == 0) return 1;
+		if(dir == 1) return 0;
+		if(dir == 2) return 3;
+		if(dir == 3) return 2;
+		return -1;
 	}
-	
-	
-	public static int changeDir(int d) {
-		if (d == 0) return 1;
-		else if (d == 1) return 0;
-		else if (d == 2) return 3;
-		else return 2;
-	}
-	
 }
