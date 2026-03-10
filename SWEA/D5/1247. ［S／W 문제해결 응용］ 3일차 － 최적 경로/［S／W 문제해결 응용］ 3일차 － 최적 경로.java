@@ -38,14 +38,15 @@ public class Solution {
 				posList[i] = new Pos(x, y);
 			}
 			
-			selectOrder(0, new boolean[N]);
+			selectOrder(0, new boolean[N], 0, ox, oy);
 			
 			System.out.println("#" + tc + " " + ans);
 		}
 		
 	}
 	
-	static void selectOrder(int idx, boolean[] visited) {
+	static void selectOrder(int idx, boolean[] visited, int dist, int x, int y) {
+		if(dist > ans) return;
 		if(idx == N) {
 			ans = Math.min(ans, calDist());
 			return;
@@ -55,7 +56,7 @@ public class Solution {
 			if(visited[i]) continue;
 			visited[i] = true;
 			order[idx] = i;
-			selectOrder(idx + 1, visited);
+			selectOrder(idx + 1, visited, Math.abs(x - posList[i].x) + Math.abs(y - posList[i].y), posList[i].x, posList[i].y);
 			visited[i] = false;
 		}
 	}
