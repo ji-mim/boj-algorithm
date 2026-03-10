@@ -46,9 +46,9 @@ public class Solution {
 	}
 	
 	static void selectOrder(int idx, boolean[] visited, int dist, int x, int y) {
-		if(dist > ans) return;
+		if(dist >= ans) return;
 		if(idx == N) {
-			ans = Math.min(ans, calDist());
+			ans = Math.min(ans, dist + Math.abs(x - hx) + Math.abs(y - hy));
 			return;
 		}
 		
@@ -56,7 +56,7 @@ public class Solution {
 			if(visited[i]) continue;
 			visited[i] = true;
 			order[idx] = i;
-			selectOrder(idx + 1, visited, Math.abs(x - posList[i].x) + Math.abs(y - posList[i].y), posList[i].x, posList[i].y);
+			selectOrder(idx + 1, visited, dist + Math.abs(x - posList[i].x) + Math.abs(y - posList[i].y), posList[i].x, posList[i].y);
 			visited[i] = false;
 		}
 	}
