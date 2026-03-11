@@ -1,113 +1,94 @@
 import java.io.*;
 import java.util.*;
 
-public class Solution {
+public class Solution  {
 	
-	static class Edge implements Comparable<Edge>{
-		int start, end;
+	static class Node implements Comparable<Node>{
+		int vertex;
 		long weight;
-
-		public Edge(int start, int end, long weight) {
-			super();
-			this.start = start;
-			this.end = end;
+		
+		public Node(int vertex, long weight) {
+			this.vertex = vertex;
 			this.weight = weight;
 		}
 		
 		@Override
-		public int compareTo(Edge e) {
-			return Double.compare(this.weight, e.weight);
+		public int compareTo(Node n) {
+			return Long.compare(this.weight, n.weight);
 		}
 	}
 	
-	static int T, N;
-	static double E;
-	static long[] xList, yList;
-	static double[][] wList;
-	static ArrayList<Edge> edges = new ArrayList<>();
-	
-	static int[] parents;
-	
-	public static void main(String[] args) throws IOException{
+	public static void main(String args[]) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		T = Integer.parseInt(br.readLine());
+		
+		int T = Integer.parseInt(br.readLine());
 		
 		for (int tc = 1 ; tc <= T ; tc ++) {
-			N = Integer.parseInt(br.readLine());
-			xList = new long[N];
-			yList = new long[N];
-			wList = new double[N][N];
-			edges.clear();
-			parents = new int[N];
-			Arrays.fill(parents, -1);
+			int N = Integer.parseInt(br.readLine());
+			Long[] xList = new Long[N];
+			Long[] yList = new Long[N];
+			ArrayList<Node>[] graph = new ArrayList[N];
+			for (int i = 0 ; i < N ; i ++) {
+				graph[i] = new ArrayList<>();
+			}
+			
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			for (int i = 0 ; i < N ; i++) {
+			for (int i = 0 ; i < N ; i ++) {
 				xList[i] = Long.parseLong(st.nextToken());
 			}
 			st = new StringTokenizer(br.readLine());
-			
 			for (int i = 0 ; i < N ; i ++) {
 				yList[i] = Long.parseLong(st.nextToken());
 			}
 			
-			E = Double.parseDouble(br.readLine());
+			double E = Double.parseDouble(br.readLine());
+			
 			
 			for (int i = 0 ; i < N ; i ++) {
-				for (int j = i ; j < N ; j ++) {
-					if(i == j || wList[i][j] != 0) continue;
-					long w = Math.abs(xList[i] - xList[j]) * Math.abs(xList[i] - xList[j]) 
-							+ Math.abs(yList[i] - yList[j]) * Math.abs(yList[i] - yList[j]);
-					
-					wList[i][j] = w;
-					wList[j][i] = w;
-					
-					edges.add(new Edge(i,j,w));
+				for (int j = i + 1 ; j < N ; j ++) {
+					Long weight = (long)(Math.abs(xList[i] - xList[j]) * Math.abs(xList[i] - xList[j])) 
+							+ (long)(Math.abs(yList[i] - yList[j]) * Math.abs(yList[i] - yList[j]));
+					graph[i].add(new Node(j, weight));
+					graph[j].add(new Node(i, weight));
 				}
 			}
 			
-			Collections.sort(edges);
+			long[] minEdge = new long[N];
+			Arrays.fill(minEdge, Long.MAX_VALUE);
+			minEdge[0] = 0;
+			boolean[] visited = new boolean[N];
+			PriorityQueue<Node> pq = new PriorityQueue<>();
+			pq.add(new Node(0,0));
 			
-			int count = 0 ;
+			int cnt = 0;
 			double result = 0;
 			
-			for (Edge edge: edges) {
-				int start = edge.start;
-				int end = edge.end;
-				double weight = edge.weight;
-				if(union(start, end)) {
-					count ++;
-					result += weight;
-					
-					if(count == N - 1) {
-						break;
+			while(!pq.isEmpty()) {
+				Node cur = pq.poll();
+				
+				if(visited[cur.vertex]) continue;
+				visited[cur.vertex] = true;
+				
+				result += (double)cur.weight;
+				cnt ++;
+				
+				for (Node next : graph[cur.vertex]) {
+					if(!visited[next.vertex] && minEdge[next.vertex] > next.weight) {
+						minEdge[next.vertex] = next.weight;
+						pq.add(new Node(next.vertex, next.weight));
 					}
 				}
+				
 			}
 			
-			System.out.println("#" + tc + " " + Math.round(result * E));
+			result *= E;
+			
+			System.out.println("#" + tc + " " + Math.round(result));
+			
 			
 			
 		}
-	}
-	
-	public static int findSet(int a) {
-		if(parents[a] < 0) return a;
-		return parents[a] = findSet(parents[a]);
-	}
-	
-	public static boolean union(int a, int b) {
-		int rootA = findSet(a);
-		int rootB = findSet(b);
-		if(rootA == rootB) return false;
 		
-		if(parents[rootA] < parents[rootB]) {
-			parents[rootA] += parents[rootB];
-			parents[rootB] = rootA;
-		}else {
-			parents[rootB] += parents[rootA];
-			parents[rootA] = rootB;
-		}
-		
-		return true;
 	}
+
 }
