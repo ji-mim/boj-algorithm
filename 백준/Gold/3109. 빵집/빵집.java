@@ -27,19 +27,17 @@ public class Main {
 		}
 		
 		for (int r = 0 ; r < R ; r ++) {
-			if(visited[r][0]) continue;
-//			visited[r][0] = true;
-			findWay = false;
-			dfs(r, 0);
+			if(dfs(r, 0)) cnt ++;;
 		}
 		
 		System.out.println(cnt);
 		
 	}
 	
-	private static void dfs(int x, int y) {
-		if(findWay) return;
+	private static boolean dfs(int x, int y) {
 		visited[x][y] = true;
+		if(y == C - 1)  return true;
+
 		for (int i = 0 ; i < 3 ; i ++) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
@@ -47,20 +45,10 @@ public class Main {
 			if(nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
 			if(visited[nx][ny]) continue;
 			if(map[nx][ny] == 'x') continue;
-//			visited[nx][ny] = true;
-			if(ny == C - 1) {
-				cnt ++;
-				findWay = true;
-//				System.out.println("====================");
-//				for(boolean[] b : visited) {
-//					System.out.println(Arrays.toString(b));
-//				}
-				return;
-			}
 			
-			
-			dfs(nx, ny);
+			if(dfs(nx, ny)) return true;;
 		}
-//		if(!findWay) visited[x][y] = false;
+		
+		return false;
 	}
 }
