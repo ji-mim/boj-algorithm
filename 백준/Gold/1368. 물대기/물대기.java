@@ -21,14 +21,11 @@ public class Main {
 	
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
-		int[] digCost = new int[N];
 		int[] minEdge = new int[N];
 		
 		for (int i = 0 ; i < N ; i ++) {
 			minEdge[i] = Integer.parseInt(br.readLine());
 		}
-		
-//		Arrays.fill(minEdge, Integer.MAX_VALUE);
 		
 		int[][] graph = new int[N][N];
 		
@@ -43,8 +40,6 @@ public class Main {
 		
 		int result = 0;
 		
-//		minEdge[0] = 0;
-		
 		for (int c = 0 ; c < N ; c ++) {
 			int minVertex = -1 ; 
 			int minWeight = Integer.MAX_VALUE; 
@@ -56,7 +51,6 @@ public class Main {
 				}
 				
 			}
-			if(minVertex == -1) break;
 			visited[minVertex] = true;
 					
 			for (int i = 0 ; i < N ; i ++) {
