@@ -61,7 +61,7 @@ public class Solution {
 				cnt ++;
 				
 				for(Node node : graph[curVertex]) {
-					if(minEdge[node.vertex] > node.weight) {
+					if(!visited[node.vertex] && minEdge[node.vertex] > node.weight) {
 						minEdge[node.vertex] = node.weight;
 						pq.add(new Node(node.vertex, node.weight));
 					}
