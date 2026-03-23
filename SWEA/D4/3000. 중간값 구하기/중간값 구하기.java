@@ -18,7 +18,7 @@ public class Solution {
 			
 			int n = Integer.parseInt(st.nextToken());
 			int firstNum = Integer.parseInt(st.nextToken());
-			long result = 0;
+			int result = 0;
 			
 			maxPq.add(firstNum);
 			
@@ -33,7 +33,7 @@ public class Solution {
 					share();
 //					System.out.println("max: " + Arrays.toString(maxPq.toArray()));
 //					System.out.println("min: " + Arrays.toString(minPq.toArray()));
-					result += (long)maxPq.peek() % mod;
+					result += maxPq.peek() % mod;
 					continue;
 				}
 				
@@ -46,7 +46,7 @@ public class Solution {
 				
 //				System.out.println("max: " + Arrays.toString(maxPq.toArray()));
 //				System.out.println("min: " + Arrays.toString(minPq.toArray()));
-				result += (long)(maxPq.peek()) % mod;
+				result += (maxPq.peek()) % mod;
 				result %= mod;
 				
 			}
