@@ -1,35 +1,45 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
+
 
 public class Solution {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-
-        int T = Integer.parseInt(br.readLine());
-
-        for (int tc = 1; tc <= T; tc++) {
-            long N = Long.parseLong(br.readLine());
-
-            long answer = -1;
-
-            long value = 1 + 8 * N;
-            long sqrt = (long) Math.sqrt(value);
-
-            // 완전제곱수 체크
-            if (sqrt * sqrt == value) {
-                long k = (-1 + sqrt) / 2;
-
-                // 검증
-                if (k * (k + 1) / 2 == N) {
-                    answer = k;
-                }
-            }
-
-            sb.append("#").append(tc).append(" ").append(answer).append("\n");
-        }
-
-        System.out.print(sb);
-    }
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+		
+		for (int tc = 1 ; tc <= T ; tc ++) {
+			StringBuilder sb = new StringBuilder();
+			long N = Long.parseLong(br.readLine());
+			
+			long ans = binarySearch(1, (long)Math.sqrt(2.0 * N) + 1 , N);
+			sb.append("#").append(tc).append(" ").append(ans);
+			System.out.println(sb);
+		}
+		
+		
+	}
+	
+	
+	static long binarySearch(long left, long right, long target) {
+		long result = -1;
+		
+		while(left <= right) {
+			long mid = (right + left) / 2;
+			long k = mid * (mid + 1) / 2;
+			
+			if (k == target){
+				result = mid;
+				break;
+			}
+			
+			if (k > target) {
+				right = mid - 1;
+			}else {
+				left = mid + 1;
+			}
+		}
+		
+		return result;
+	}
 }
