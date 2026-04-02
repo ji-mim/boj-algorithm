@@ -9,6 +9,9 @@ public class Main {
 	static boolean [][] visited;
 	static List<int[]> wallSpot = new ArrayList<>();
 	static List<Integer> selected = new ArrayList<>();
+	static int[] dx = {-1,1,0,0};
+	static int[] dy = {0,0,-1,1};
+
 	
 	
 	public static void main(String[] args) throws IOException {
@@ -92,8 +95,6 @@ public class Main {
 	}
 	
 	public static void dfs(int x, int y) {
-		int[] dx = {-1,1,0,0};
-		int[] dy = {0,0,-1,1};
 		
 		for (int i = 0 ; i < 4 ; i ++) {
 			int nx = x + dx[i];
