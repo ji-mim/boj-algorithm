@@ -29,19 +29,20 @@ public class Solution {
 				cost[i] = Integer.parseInt(st.nextToken());
 				
 			}
-			System.out.println("#" + tc + " " + dfs(0, 0));
+			System.out.println("#" + tc + " " + dfs(0, K));
 		}
 	}
 	
 	static int dfs(int idx, int w) {
-		if(w > K) return -100_000_000;
 		if(idx == N) return 0;
 		if(memo[idx][w] != -1) return memo[idx][w];
 		
-		int a = dfs(idx + 1, w);
-		int b = dfs(idx + 1, w + weight[idx]) + cost[idx];
+		int ret = dfs(idx + 1, w);
+		if(w - weight[idx] >= 0) {
+			ret = Math.max(ret, dfs(idx + 1, w - weight[idx]) + cost[idx]);
+		}
 		
-		return memo[idx][w] = Math.max(a, b);
+		return memo[idx][w] = ret;
 	}
 
 }
